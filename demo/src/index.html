@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sample TN App</title>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+		/>
+		<style type="text/css">
+			.modal-dialog {
+				max-width: 100%;
+			}
+			body {
+				background-color: #8aa29e;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container pb-2">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="jumbotron mt-2 mb-5 py-2">
+						<!-- 					 <h1>Sample TN App</h1>
+					<p>This is intended to be a demonstration of how to integrate with the Payment Broker.</p>
+					<p>Check the developer tools (F12) console to see what's happening behind the scenes.</p>
+ -->
+						<h3>Config</h3>
+						<form id="config-form">
+							<div class="form-group">
+								<label>Forms URL</label>
+								<input
+									type="text"
+									name="formsUrl"
+									id="forms-url"
+									class="form-control"
+									value="http://localhost:3000"
+								/>
+							</div>
+							<!-- 	<div class="form-group">
+							<label for="paymentServiceUrl">Payment Service URL</label>
+							<input class="form-control" type="text" name="paymentServiceUrl" value="http://localhost:8090/c/C123/api/v1">
+						</div>
+						<div class="form-group">
+							<label for="merchantConfigId">Merchant Config ID</label>
+							<input class="form-control" type="text" name="merchantConfigId" placeholder="TN Merchant ID" value="06fa4486-eae1-471a-94ed-6d1ca8c322e5">
+						</div>
+
+						<div class="form-group">
+							<label for="merchantConfigId">UI Mode</label>
+							<select class="form-control" name="paymentMethod" id="ui-mode-picker">
+								<option value="embedded">Embedded</option>
+								<option value="iframe">iFrame</option>
+							</select>
+						</div>
+ -->
+						</form>
+						<h3>Styles</h3>
+						<form id="styles-form">
+							<div class="form-group">
+								<label>Background Color</label>
+								<input
+									type="text"
+									name="backgroundColor"
+									id="bg-color-picker"
+									class="form-control"
+									value="#8aa29e"
+								/>
+							</div>
+							<div class="form-group">
+								<label>Color</label>
+								<input
+									type="text"
+									name="color"
+									id="color-picker"
+									class="form-control"
+									value="black"
+								/>
+							</div>
+							<div class="form-group">
+								<label>Font Weight</label>
+								<input
+									type="text"
+									name="fontWeight"
+									id="font-weight"
+									class="form-control"
+									value="normal"
+								/>
+							</div>
+							<div class="form-group">
+								<label>Font Family</label>
+								<input
+									type="text"
+									name="fontFamily"
+									id="font-family"
+									class="form-control"
+									value="sans-serif"
+								/>
+							</div>
+						</form>
+
+						<h3>User Info</h3>
+						<form id="user-form">
+							<div class="form-group">
+								<label>First Name</label>
+								<input
+									class="form-control"
+									type="text"
+									name="firstName"
+								/>
+							</div>
+							<div class="form-group">
+								<label>Last Name</label>
+								<input
+									class="form-control"
+									type="text"
+									name="lastName"
+								/>
+							</div>
+							<div class="form-group">
+								<label>Email</label>
+								<input
+									class="form-control"
+									type="email"
+									name="email"
+								/>
+							</div>
+						</form>
+					</div>
+
+					<h2>Checkout</h2>
+					<form id="checkout-form">
+						<div class="form-group">
+							<label for="amount">Amount</label>
+							<input
+								type="number"
+								name="amount"
+								class="form-control"
+								value="12.34"
+							/>
+						</div>
+						<div class="form-group">
+							<label for="currency">Currency</label>
+							<select class="form-control" name="currency">
+								<option value="USD">USD</option>
+								<option value="EUR">EUR</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="paymentMethod">Payment Method</label>
+							<select
+								class="form-control"
+								name="paymentMethod"
+								id="payment-picker"
+							>
+								<!-- <option value="">Choose Payment Method</option> -->
+								<option value="pse" selected>PSE</option>
+								<option value="safetypay">SafetyPay</option>
+							</select>
+						</div>
+
+						<!-- Payment Broker js will inject here -->
+						<div id="pay-form"></div>
+
+						<input
+							id="submit-btn"
+							class="btn btn-primary"
+							type="submit"
+							name="Submit"
+							value="Submit"
+						/>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Extra large modal -->
+		<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".payment-redirect-modal">Extra large modal</button> -->
+
+		<div
+			class="modal fade payment-redirect-modal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="myExtraLargeModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-xl">
+				<div
+					class="modal-content"
+					id="payment-redirect-modal-content"
+				></div>
+			</div>
+		</div>
+
+		<script
+			src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+			integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+			integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+			crossorigin="anonymous"
+		></script>
+	</body>
+</html>
