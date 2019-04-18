@@ -2,11 +2,11 @@ import { parseUrl, encodeStyles } from "./util";
 import { iframeResizer } from "iframe-resizer";
 import "./polyfill";
 
-let formOrigin = "http://localhost:3000";
+let formOrigin; // Origin of the form that we will put in an iframe (e.g. "forms.touchnet.com")
 let element; // HTML element to mount iframe in
-let parentForm; // HTML form element our element is mounted in, if any
 let iframe; // HTML iframe element
-let redirectUrl;
+let parentForm; // HTML form element our iframe is mounted in, if any
+let submitResult; // Response from iframe after it is submitted
 
 export default class BrokerWebSdk {
   constructor(redirectUrl) {
@@ -21,7 +21,6 @@ export default class BrokerWebSdk {
    */
   mount(selector, styles) {
     element = document.querySelector(selector);
-    parentForm = element.closest("form");
 
     if (!element) {
       console.error("Could not find element in document to mount to");
@@ -33,7 +32,7 @@ export default class BrokerWebSdk {
       return false;
     }
 
-    // Load an iframe
+    // Create and insert an iframe
     iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.frameBorder = 0;
@@ -45,6 +44,10 @@ export default class BrokerWebSdk {
       encodeStyles(styles);
     element.appendChild(iframe);
     iFrameResize({ log: false }, iframe); // Set log to true for debugging
+
+    // Save the <form> element we're mounting in (if any) for future reference
+    parentForm = element.closest("form");
+
     return true;
   }
 
@@ -53,7 +56,10 @@ export default class BrokerWebSdk {
   }
 
   submit() {
-    // Send message to iframe
+    // Reset the result
+    submitResult = null;
+
+    // Tell the iframe to submit
     iframe.contentWindow.postMessage(
       { sender: "sdk.js", type: "submit" },
       formOrigin
@@ -61,8 +67,6 @@ export default class BrokerWebSdk {
 
     // Return a Promise that will wait for the iframe to send
     // a message back before resolving, unless it times-out first
-    // Alternative idea - we emit a submit event that clients of SDK should
-    // listen for, but that's not as nice as working w/Promsises and has complications of its own
     return new Promise((resolve, reject) => {
       const maxWaitTime = 5000; //milliseconds
       let stopWaiting = false;
@@ -73,29 +77,26 @@ export default class BrokerWebSdk {
 
       function wait() {
         if (stopWaiting) {
-          reject(new Error("Failed to receive a response from the form"));
+          // Rather than throw errors, we'll keep everything in the result object
+          // and make clients check if there is an error (ala golang ;)
+          resolve({
+            error: {
+              type: "connection_error",
+              message: "Request timed-out"
+            }
+          });
         }
-        if (!redirectUrl) {
+        if (!submitResult) {
           // Keep waiting.. (using recursion)
           window.setTimeout(wait, 100);
         } else {
-          resolve(redirectUrl);
+          resolve(submitResult);
         }
       }
 
       wait();
     });
   }
-}
-
-function redirect(redirectUrl) {
-  window.top.location = redirectUrl;
-}
-
-function calcHeight(iframeElement) {
-  console.log("calcHeight");
-  console.log(iframeElement);
-  return iframeElement.contentWindow.document.body.scrollHeight;
 }
 
 // Set up listener for messages from iframe
@@ -105,8 +106,8 @@ window.addEventListener("message", event => {
     switch (message.type) {
       case "enter":
         // This would be when the user hits "Enter" in the iframe.
-        // If our iframe form is mounted within an HTML form element,
-        // we want to trigger the form's submit event manually,
+        // If we mounted the iframe within an HTML form element,
+        // we want to trigger that form's submit event manually,
         // because presumably that is where our submit() method is along
         // with any other other app-specific logic
         if (parentForm) {
@@ -115,8 +116,8 @@ window.addEventListener("message", event => {
         }
         break;
       case "submitted":
-        // Set the global redirectUrl
-        redirectUrl = message.redirectUrl;
+        // Set the submit result as a global so the BrokerWebSdk::submit() can access it
+        submitResult = message.result;
         break;
       case "loaded":
         // Using iframeResizer instead
