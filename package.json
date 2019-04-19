@@ -1,7 +1,7 @@
 {
-  "name": "broker-js-sdk",
+  "name": "broker-web-sdk",
   "version": "1.0.0",
-  "description": "A JavaScript SDK for applications integrating with the TN Payment Broker",
+  "description": "A web SDK for applications integrating with the TN Payment Broker",
   "files": [
     "css",
     "umd"
