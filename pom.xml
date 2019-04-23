@@ -1,0 +1,78 @@
+<!-- This file is just used to run builds on Jenkins and deploy to pdapps. The version, artifact and stuff doesn't matter (I hope) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.touchnet.paymentbroker.websdk</groupId>
+  <version>0</version>
+  <artifactId>brokerwebsdk</artifactId>
+
+  <packaging>pom</packaging>
+  <name>Payment Broker Web SDK</name>
+
+  <scm>
+    <connection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</connection>
+    <developerConnection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</developerConnection>
+    <url>https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</url>
+  </scm>
+
+  <properties>
+    <workingDir>${project.basedir}</workingDir>
+    <distDir>${workingDir}\build</distDir>
+  </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>touchnet-releases</id>
+      <name>TouchNet Releases</name>
+      <url>http://pdbuild:8081/nexus/content/repositories/touchnet-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>touchnet-snapshots</id>
+      <name>TouchNet Nexus Public Snapshots</name>
+      <url>http://pdbuild:8081/nexus/content/repositories/touchnet-snapshot/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.6</version>
+        <configuration>
+          <nodeVersion>v10.15.3</nodeVersion>
+          <npmVersion>6.9.0</npmVersion>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+          <execution>
+            <id>npm-install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>ci</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
