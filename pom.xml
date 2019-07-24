@@ -18,6 +18,7 @@
   <properties>
     <workingDir>${project.basedir}</workingDir>
     <distDir>${workingDir}\build</distDir>
+    <tn-release-dir-prefix>file:///\\\\pdsource/PDRelease</tn-release-dir-prefix>
   </properties>
 
   <distributionManagement>
