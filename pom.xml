@@ -74,25 +74,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <appendAssemblyId>false</appendAssemblyId>
-          <descriptors>
-            <descriptor>maven-assembly-descriptor.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <id>create-archive</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -107,7 +88,7 @@
             <inherited>false</inherited>
             <configuration>
               <url>${tn-release-dir-prefix}/Commerce_Solutions/PaymentBroker/broker-web-sdk/${project.version}</url>
-              <fromFile>${project.build.directory}/${project.build.finalName}.zip</fromFile>
+              <fromDir>${distDir}</fromDir>
             </configuration>
             <executions>
               <execution>
