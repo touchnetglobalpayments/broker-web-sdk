@@ -3,16 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.touchnet.paymentbroker</groupId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <artifactId>broker-web-sdk</artifactId>
 
   <packaging>pom</packaging>
   <name>Payment Broker Web SDK</name>
 
   <scm>
-    <connection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</connection>
-    <developerConnection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</developerConnection>
-    <url>https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</url>
+    <connection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/tags/broker-web-sdk-1.0.0</connection>
+    <developerConnection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/tags/broker-web-sdk-1.0.0</developerConnection>
+    <url>https://pdsource:8443/svn/payment-broker/broker-web-sdk/tags/broker-web-sdk-1.0.0</url>
   </scm>
 
   <properties>
