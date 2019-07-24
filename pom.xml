@@ -1,9 +1,9 @@
-<!-- This file is just used to run builds on Jenkins and deploy to pdapps. The version, artifact and stuff doesn't matter (I hope) -->
+<!-- This file is used to run builds on Jenkins and deploy to pdapps -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.touchnet.paymentbroker.websdk</groupId>
-  <version>0</version>
+  <version>1.0.0-SNAPSHOT</version>
   <artifactId>brokerwebsdk</artifactId>
 
   <packaging>pom</packaging>
@@ -75,4 +75,32 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>tn-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>wagon-maven-plugin</artifactId>
+            <version>2.0.0</version>
+            <inherited>false</inherited>
+            <configuration>
+              <url>${tn-release-dir-prefix}/Commerce_Solutions/PaymentBroker/broker-web-sdk/${project.version}</url>
+              <fromFile>${project.build.directory}/${project.build.finalName}.zip</fromFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>upload</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>upload-single</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
