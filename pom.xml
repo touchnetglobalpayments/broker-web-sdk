@@ -17,7 +17,7 @@
 
   <properties>
     <workingDir>${project.basedir}</workingDir>
-    <distDir>${workingDir}\build</distDir>
+    <distDir>${workingDir}\umd</distDir>
     <tn-release-dir-prefix>file:///\\\\pdsource/PDRelease</tn-release-dir-prefix>
   </properties>
 
@@ -95,7 +95,7 @@
                 <id>upload</id>
                 <phase>deploy</phase>
                 <goals>
-                  <goal>upload-single</goal>
+                  <goal>upload</goal>
                 </goals>
               </execution>
             </executions>
