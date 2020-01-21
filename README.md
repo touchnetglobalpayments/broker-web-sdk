@@ -7,39 +7,6 @@
 The Broker Web SDK is intended to be used by application front-ends that want to make payments through
 the Payment Broker.
 
-## Prerequisites
-
-[Node.js](http://nodejs.org/) >= 6 must be installed.
-
-## Installation
-
-- Running `npm install` in the component's root directory will install everything you need for development.
-
-## Demo Development Server
-
-- `npm start` will run a development server with the component's demo app at [http://localhost:3000](http://localhost:3000) with hot module reloading. To change the port you can run `PORT=9090 npm start`.
-
-## Running Tests
-
-- `npm test` will run the tests once.
-
-- `npm run test:coverage` will run the tests and produce a coverage report in `coverage/`.
-
-- `npm run test:watch` will run the tests on every change.
-
-## Building
-
-- `npm run build` will build the component for publishing to npm and also bundle the demo app.
-
-- `npm run clean` will delete built resources.
-
-[build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
-[build]: https://travis-ci.org/user/repo
-[npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
-[npm]: https://www.npmjs.org/package/npm-package
-[coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/user/repo
-
 ## Usage
 
 When built, the project produces a file called `broker-web-sdk.js` (and a minified version).
@@ -55,7 +22,9 @@ supported by the Broker.
 
 - `BrokerWebSdk(redirectTo)` - constructor that takes the redirectTo link from a recently created PaymentSession.
 - `mount(element, styles)` - inserts a payment form in `element` for collecting additional payer data (if applicable); takes a `styles` object to make the payment form look more like it's part of your page; Returns boolean of whether something was mounted.
-- `submit()` - submits the payment form for processing. Returns a Promise with a result object.
+- `submit(options)` - submits the payment form for processing. Returns a Promise with a result object. `options` is an object.
+  Currently accepts `timeout` property that should be set to the time in milliseconds your application is willing to wait for a response before considering the submission to have timed-out (default is 10000 ms).
+  If the SDK times-out, but the submission ultimately succeeds, the next submission will fail with a "payer data already collected" error. Your app would need to handle that situation appropriately.
 
 ### Quick Start
 
@@ -78,6 +47,8 @@ form.addEventListener("submit", function(event) {
     if (!result.error) {
       // You could also save this redirectUrl for later
       window.location = redirectUrl;
+    } else {
+      // Notify the user of error
     }
     });
 });
@@ -135,3 +106,7 @@ Currently the supported properties of the style object are:
 - "padding"
 
 > The styles part of the SDK is a big work-in-progress..
+
+## Broker Developers
+
+See `CONTRIBUTING.md` for more info.
