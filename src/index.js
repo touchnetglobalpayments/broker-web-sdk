@@ -55,7 +55,9 @@ export default class BrokerWebSdk {
     iframe.remove();
   }
 
-  submit() {
+  submit(options) {
+    options = options || {};
+
     // Reset the result
     submitResult = null;
 
@@ -68,7 +70,7 @@ export default class BrokerWebSdk {
     // Return a Promise that will wait for the iframe to send
     // a message back before resolving, unless it times-out first
     return new Promise((resolve, reject) => {
-      const maxWaitTime = 5000; //milliseconds
+      const maxWaitTime = options.timeout || 10000; //milliseconds
       let stopWaiting = false;
 
       setTimeout(function() {

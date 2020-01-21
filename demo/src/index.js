@@ -36,7 +36,7 @@ checkoutForm.addEventListener("submit", function(event) {
   event.preventDefault();
 
   console.log("checkoutForm submit event");
-  broker.submit().then(url => {
+  broker.submit({ timeout: 6500 }).then(url => {
     console.log("broker.submit Promise result", url);
     // openPaymentModal(url);
   });
