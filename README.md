@@ -5,7 +5,7 @@
 [![Coveralls][coveralls-badge]][coveralls]
 
 The Broker Web SDK is intended to be used by application front-ends that want to make payments through
-the Payment Broker.
+the Payment Broker and have the Broker's payment method collection forms appear integrated in your page.
 
 ## Usage
 
@@ -46,7 +46,7 @@ form.addEventListener("submit", function(event) {
   .then(result => {
     if (!result.error) {
       // You could also save this redirectUrl for later
-      window.location = redirectUrl;
+      window.location = result.redirectUrl;
     } else {
       // Notify the user of error
     }
@@ -66,8 +66,7 @@ the same URL you provided as the "returnUrl" when you create a PaymentSession if
 You have the choice to do a full-page redirect or create an iframe or whatever you want,
 just know that we have no control or knowledge of the contents of this page or if it will look good in a small iframe.
 
-    TODO: Can we include something in the return of `submit` that indicates if a redirect
-    is required or if the payment is already complete?
+    TODO: Should we include the PaymentSession status in the return of `submit` to indicate if a redirect is required or if the payment is already complete?
 
 ### returnUrl
 

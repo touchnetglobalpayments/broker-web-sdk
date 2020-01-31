@@ -16,6 +16,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
+    "globalpayments-3ds": "^1.0.4",
     "iframe-resizer": "^4.1.0"
   },
   "peerDependencies": {},

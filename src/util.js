@@ -1,34 +1,7 @@
-function parseUrl(url) {
-  // Returns an object of the URL query string after the fragment ('#')
-  // Currently, we're URL-encoding the fragment - not sure if it's
-  // necessary but that's how the server sends it
-  const fragment = decodeURIComponent(new URL(url).hash.slice(1));
-  const keyPairs = fragment.split("&");
-  let params = {};
-  for (var i = keyPairs.length - 1; i >= 0; i--) {
-    const [key, value] = keyPairs[i].split("=");
-    // Check if the key is itself an object with members (e.g. 'style.color')
-    const obj = key.split(".");
-    // Right now only support one nested object
-    if (obj.length === 2) {
-      let subObject = {};
-      subObject[obj[1]] = value;
-      params[obj[0]] = subObject;
-    } else {
-      params[key] = value;
-    }
-  }
-  return params;
-}
-
-function getPaymentUrl() {
-  // The URL of the PaymentSession should be in the browser window's URL
-  // as a "fragment" - the part after the '#'.
-  // parseUrl();
-  const fragment = new URL(window.location).hash.slice(1);
-  const elems = fragment.split("&");
-  return elems[0];
-}
+import {
+  handleInitiateAuthentication,
+  ChallengeWindowSize
+} from "globalpayments-3ds";
 
 function encodeStyles(styles) {
   let url = "";
@@ -51,4 +24,23 @@ function encodeStyles(styles) {
   return url;
 }
 
-export { parseUrl, encodeStyles };
+async function perform3DS2Challenge(initAuthResponse) {
+  const challengeWindowOptions = {
+    displayMode: "lightbox",
+    size: ChallengeWindowSize.Windowed500x600,
+    target: "iframe-target",
+    origin: "https://pdapps-new:9043" // TODO: Not hardcoded
+  };
+
+  // This will handle opening the iframe and listening for the iframe's message when completed
+  const initAuthResponseAndChallengeResult = await handleInitiateAuthentication(
+    initAuthResponse,
+    challengeWindowOptions
+  );
+
+  // Global's SDK returns the challenge result plus the Init Auth response we gave it...
+  // We're only concerned with the result.
+  return initAuthResponseAndChallengeResult.challenge.response.data;
+}
+
+export { encodeStyles, perform3DS2Challenge };
