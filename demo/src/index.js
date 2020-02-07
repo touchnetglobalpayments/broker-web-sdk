@@ -34,10 +34,12 @@ paymentPicker.addEventListener("change", function(event) {
 
 checkoutForm.addEventListener("submit", function(event) {
   event.preventDefault();
+  btn.disabled = true;
 
   console.log("checkoutForm submit event");
-  broker.submit({ timeout: 6500 }).then(url => {
+  broker.submit().then(url => {
     console.log("broker.submit Promise result", url);
+    btn.disabled = false;
     // openPaymentModal(url);
   });
 });

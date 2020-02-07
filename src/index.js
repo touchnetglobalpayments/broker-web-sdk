@@ -67,11 +67,14 @@ export default class BrokerWebSdk {
       const maxWaitTime = options.timeout || 10000; //milliseconds
       let stopWaiting = false;
 
-      setTimeout(function() {
-        stopWaiting = true;
-      }, maxWaitTime);
+      function startTimer(waitTime) {
+        return window.setTimeout(function() {
+          stopWaiting = true;
+        }, waitTime);
+      }
+      const timeoutTimer = startTimer(maxWaitTime);
 
-      function wait() {
+      function waitForMessage() {
         if (stopWaiting) {
           // Rather than throw errors, we'll keep everything in the result object
           // and make clients check if there is an error (ala golang ;)
@@ -82,15 +85,26 @@ export default class BrokerWebSdk {
             }
           });
         }
-        if (!submitResult) {
-          // Keep waiting.. (using recursion)
-          window.setTimeout(wait, 100);
+        if (submitResult) {
+          if (authenticationRequired(submitResult)) {
+            // Special case - 3DS2 Challenge involves opening an iframe where the user must authenticate with their bank
+            // The application consuming our SDK shouldn't need to know this, so we don't want to return yet,
+            // and we also don't want the timer to expire while the user is attempting to complete the challenge (for example, entering PIN sent to phone).
+            window.clearTimeout(timeoutTimer);
+
+            // Listen for new messages from iframe, since the challenge result will be submitted once completed
+            submitResult = null;
+            window.setTimeout(waitForMessage, 100);
+          } else {
+            resolve(submitResult);
+          }
         } else {
-          resolve(submitResult);
+          // Keep waiting.. (using recursion)
+          window.setTimeout(waitForMessage, 100);
         }
       }
 
-      wait();
+      waitForMessage();
     });
   }
 }
@@ -112,40 +126,18 @@ window.addEventListener("message", event => {
         break;
 
       case "submitted":
-        // Special case - form may throw a 3DS2 error. SDK will handle this itself.
+        // Set the submit result as a global so the BrokerWebSdk::submit() can access it
         const result = message.result;
+        submitResult = result;
 
-        if (result.error && result.error.reason === "3DS2_CHALLENGE_REQUIRED") {
-          /* Example Init Auth Response (3DS2_CHALLENGE_REQUIRED error): 
-          {
-            acsTransactionId: "516faa38-bfa1-460b-ba3e-7da6d0bc45d2",
-            authenticationSource: "BROWSER",
-            authenticationRequestType: "DYNAMIC_CHALLENGE",
-            cardholderResponseInfo: null,
-            challenge: {
-              encodedChallengeRequest:
-                "ewogICJ0aHJlZURTU2VydmVyVHJhbnNJRCIgOiAiNWJhMDZlYmUtMWE0OS00M2Y1LWE2MGUtMmJmNjM1OWFmYTQ5IiwKICAiYWNzVHJhbnNJRCIgOiAiNTE2ZmFhMzgtYmZhMS00NjBiLWJhM2UtN2RhNmQwYmM0NWQyIiwKICAiY2hhbGxlbmdlV2luZG93U2l6ZSIgOiAiMDQiLAogICJtZXNzYWdlVHlwZSIgOiAiQ1JlcSIsCiAgIm1lc3NhZ2VWZXJzaW9uIiA6ICIyLjEuMCIKfQ==",
-              requestUrl: "https://test.portal.gpwebpay.com/pay-sim-gpi/sim/acs"
-            },
-            challengeMandated: true,
-            deviceRenderOptions: null,
-            dsTransactionId: "2552ace0-2b56-4cc3-bbd5-ebc6549d4025",
-            messageCategory: "PAYMENT_AUTHENTICATION",
-            messageVersion: "2.1.0",
-            serverTransactionId: "5ba06ebe-1a49-43f5-a60e-2bf6359afa49",
-            status: "CHALLENGE_REQUIRED",
-            statusReason: "LOW_CONFIDENCE"
-          }
-          */
-
+        // Special case - form may throw a 3DS2 error. SDK will handle this itself.
+        if (authenticationRequired(result)) {
+          // Raw error object should match the IInitiateAuthenticationResponseData from GlobalPayment's 3DS JS SDK
           perform3DS2Challenge(result.error.raw).then(challengeResult => {
             sendIframeMessage("challenge_complete", challengeResult);
           });
           return;
         }
-
-        // Set the submit result as a global so the BrokerWebSdk::submit() can access it
-        submitResult = result;
         break;
 
       default:
@@ -153,6 +145,13 @@ window.addEventListener("message", event => {
     }
   }
 });
+
+function authenticationRequired(submitResult) {
+  return (
+    submitResult.error &&
+    submitResult.error.reason === "3DS2_CHALLENGE_REQUIRED"
+  );
+}
 
 function sendIframeMessage(type, message) {
   iframe.contentWindow.postMessage(

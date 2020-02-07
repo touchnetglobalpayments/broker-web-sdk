@@ -29,7 +29,7 @@ async function perform3DS2Challenge(initAuthResponse) {
     displayMode: "lightbox",
     size: ChallengeWindowSize.Windowed500x600,
     target: "iframe-target",
-    origin: "https://pdapps-new:9043" // TODO: Not hardcoded
+    origin: new URL(initAuthResponse.tn3DS2Origin).origin
   };
 
   // This will handle opening the iframe and listening for the iframe's message when completed
