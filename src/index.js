@@ -64,7 +64,7 @@ export default class BrokerWebSdk {
     // Return a Promise that will wait for the iframe to send
     // a message back before resolving, unless it times-out first
     return new Promise((resolve, reject) => {
-      const maxWaitTime = options.timeout || 10000; //milliseconds
+      const maxWaitTime = options.timeout || 300000; //milliseconds
       let stopWaiting = false;
 
       function startTimer(waitTime) {
