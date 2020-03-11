@@ -49,7 +49,9 @@ export default class BrokerWebSdk {
   }
 
   unmount() {
-    iframe.remove();
+    if (iframe) {
+      iframe.remove();
+    }
   }
 
   submit(options) {
@@ -141,7 +143,7 @@ window.addEventListener("message", event => {
         break;
 
       default:
-        console.warn("Unknown message type:", message.type);
+        console.debug("Unknown message type:", message.type);
     }
   }
 });
