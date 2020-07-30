@@ -36,11 +36,18 @@ checkoutForm.addEventListener("submit", function(event) {
   event.preventDefault();
   btn.disabled = true;
 
-  console.log("checkoutForm submit event");
-  broker.submit().then(url => {
-    console.log("broker.submit Promise result", url);
+  broker.submit().then(result => {
+    console.log("broker.submit Promise result", result);
     btn.disabled = false;
-    // openPaymentModal(url);
+
+    if (!result.error) {
+      console.log("PAYER INFO SUBMIT COMPLETE. REDIRECT URL: ", result.redirectUrl);
+    }
+
+    // If our "returnUrl" was returned, we know the flow is done. Otherwise we still have steps to complete.
+    if (result.redirectUrl != returnUrl){
+      openPaymentModal(result.redirectUrl);
+    }
   });
 });
 
@@ -70,7 +77,6 @@ function createPaymentSession(paymentMethod) {
     }
   };
 
-  console.log("Creating a PaymentSession with the Broker");
   var paymentServiceUrl = configFormData.get("paymentServiceUrl");
   return (
     fetch(paymentServiceUrl + "/ps", {

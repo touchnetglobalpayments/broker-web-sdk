@@ -1,4 +1,4 @@
-import { encodeStyles, perform3DS2Challenge } from "./util";
+import { encodeStyles, perform3DS2Challenge, performDcc } from "./util";
 import { iframeResizer } from "iframe-resizer";
 import "./polyfill";
 
@@ -88,7 +88,7 @@ export default class BrokerWebSdk {
           });
         }
         if (submitResult) {
-          if (authenticationRequired(submitResult)) {
+          if (authenticationRequired(submitResult) || dccRequired(submitResult)) {
             // Special case - 3DS2 Challenge involves opening an iframe where the user must authenticate with their bank
             // The application consuming our SDK shouldn't need to know this, so we don't want to return yet,
             // and we also don't want the timer to expire while the user is attempting to complete the challenge (for example, entering PIN sent to phone).
@@ -132,16 +132,21 @@ window.addEventListener("message", event => {
         const result = message.result;
         submitResult = result;
 
-        // Special case - form may throw a 3DS2 error. SDK will handle this itself.
+        // Special case - form may throw a 3DS2 or DCC error. SDK will handle this itself.
         if (authenticationRequired(result)) {
           // Raw error object should match the IInitiateAuthenticationResponseData from GlobalPayment's 3DS JS SDK
           perform3DS2Challenge(result.error.raw).then(challengeResult => {
             sendIframeMessage("challenge_complete", challengeResult);
           });
           return;
+        } else if (dccRequired(result)){
+          performDcc(result.error.raw).then(dccResult =>{
+            sendIframeMessage("dcc_complete", dccResult);
+          });
+          return;
         }
         break;
-
+        
       default:
         console.debug("Unknown message type:", message.type);
     }
@@ -150,8 +155,17 @@ window.addEventListener("message", event => {
 
 function authenticationRequired(submitResult) {
   return (
+    submitResult &&
     submitResult.error &&
     submitResult.error.reason === "3DS2_CHALLENGE_REQUIRED"
+  );
+}
+
+function dccRequired(submitResult) {
+  return (
+    submitResult &&
+    submitResult.error &&
+    submitResult.error.reason === "DCC_SELECTION_REQUIRED"
   );
 }
 
