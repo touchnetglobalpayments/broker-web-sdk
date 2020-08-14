@@ -10,9 +10,9 @@
   <name>Payment Broker Web SDK</name>
 
   <scm>
-    <connection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</connection>
-    <developerConnection>scm:svn:https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</developerConnection>
-    <url>https://pdsource:8443/svn/payment-broker/broker-web-sdk/trunk</url>
+    <connection>scm:git:ssh://git@tn-hq-source1.ks.touchnet.com:7999/payment-broker/broker-web-sdk.git</connection>
+    <developerConnection>scm:git:ssh://git@tn-hq-source1.ks.touchnet.com:7999/payment-broker/broker-web-sdk.git</developerConnection>
+    <url>https://touchbase.touchnet.com/bitbucket/projects/payment-broker/repos/broker-web-sdk/browse</url>
   </scm>
 
   <properties>
