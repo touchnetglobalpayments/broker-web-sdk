@@ -7,6 +7,7 @@
     "umd"
   ],
   "scripts": {
+    "lint": "echo TODO: configure eslint",
     "build": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "prepublishOnly": "npm run build",
