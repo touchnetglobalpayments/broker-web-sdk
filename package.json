@@ -29,7 +29,6 @@
   "author": "TouchNet",
   "homepage": "",
   "license": "UNLICENSED",
-  "private": true,
   "repository": "",
   "keywords": [
     "react-component"
