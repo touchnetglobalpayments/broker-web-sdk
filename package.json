@@ -1,12 +1,13 @@
 {
-  "name": "broker-web-sdk",
-  "version": "1.0.0",
+  "name": "@touchnet/broker-web-sdk",
+  "version": "1.2.1",
   "description": "A web SDK for applications integrating with the TN Payment Broker",
   "files": [
     "css",
     "umd"
   ],
   "scripts": {
+    "lint": "echo TODO: configure eslint",
     "build": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "prepublishOnly": "npm run build",
@@ -21,12 +22,13 @@
   },
   "peerDependencies": {},
   "devDependencies": {
-    "nwb": "^0.25.2"
+    "nwb": "^0.25.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "author": "TouchNet",
   "homepage": "",
   "license": "UNLICENSED",
-  "private": true,
   "repository": "",
   "keywords": [
     "react-component"
