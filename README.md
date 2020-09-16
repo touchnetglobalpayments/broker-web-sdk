@@ -1,9 +1,5 @@
 # Payment Broker Web SDK
 
-[![Travis][build-badge]][build]
-[![npm package][npm-badge]][npm]
-[![Coveralls][coveralls-badge]][coveralls]
-
 The Broker Web SDK is intended to be used by application front-ends that want to make payments through
 the Payment Broker and have the Broker's payment method collection forms appear integrated in your page.
 
@@ -30,7 +26,8 @@ supported by the Broker.
 
 1. Application's back-end creates a PaymentSession with the Broker
 2. Pass the PaymentSession `redirectTo` to the application's front-end
-3. Load the SDK in your page: `<script src="https://touchnet.com/sdk.js">`.
+3. Load the SDK 
+in your page: `<script src="https://touchnet.com/sdk.js">`.
 4. Create a new instance of the SDK with the redirectTo: `const sdk = new BrokerWebSDK(redirectTo)`.
 5. Mount the payment form: `sdk.mount('.pay-element')`, where `.pay-element` is a query selector
    for the element you want the SDK to insert the form at. Note that some payment methods may not
