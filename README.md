@@ -29,7 +29,7 @@ var BrokerWebSdk = require('@touchnet/broker-web-sdk/umd/broker-web-sdk.min.js')
   If the SDK times-out, but the submission ultimately succeeds, the next submission will fail with a "payer data already collected" error. Your app would need to handle that situation appropriately.
 
 ### Quick Start
-1. Create a payment session by calling `POST /c/{tenantId}/api/v2/customer/ps` . See the Open API documentation for more details
+1. Create a payment session by calling `POST /c/{tenantId}/api/v2/customer/ps`. Your application should provide a [`returnUrl`](#returnUrl) for the end users to return to once the payment session flow is complete. See the Open API documentation for more details
 2. in the response you will find a payment session id and url link labelled `redirectTo` that directs to the next step in the payment flow.
 3. use the `redirectTo` link to initialize the broker SDK by calling the constructor
 ```javascript
@@ -40,6 +40,7 @@ const sdk = new BrokerWebSDK(redirectTo)
 ```javascript
 // Note: `.pay-element` is a query selector for the element in which you want the SDK to insert the form.
 // Some payment methods do not require extra fields, so calling `mount` may not always insert new HTML elements into the DOM.
+// For this reason, mount() will returns a boolean indicating whether it mounted something or not.
 sdk.mount('.pay-element')
 // Register a listener on your own submit event that calls `sdk.submit()`
 const form = document.getElementById("checkout-form");
@@ -59,18 +60,21 @@ form.addEventListener("submit", function(event) {
 > We recommend that you wrap the div or element that you mount the SDK's element in with a form.
 > If you do so, the user can hit enter in the SDK's form and your form's submit event will be
 > triggered automatically.
-5. The user will interact with the broker within this iframe, insulating your application from PCI data. Upon submit, you will receive a response indicating the current status of the payment. This could be: READY_FOR_PROCESS (if all required payer data has been collected), or INITIALIZED (additional payer data required)
-> `submit` will return a Promise that resolves to a result object.
+
+5. The user will interact with the broker within this iframe, insulating your application from PCI data. Upon submit, you will receive a response with either your application return URL link (if all payment data collection is complete) or a link with additional payment steps for the end user to continue the payment.
+> `submit` returns a Promise that resolves to a result object.
 You should check that the result does not have an `error` property.
 If it does not have an error, it will have a `redirectUrl` property.
-This is the URL that the user must visit in order to complete the payment OR
+This property will contain either the URL that the user must visit in order to complete the payment OR
 the same URL you provided as the `returnUrl` when you create a PaymentSession if no extra payment steps are required.
-You have the choice to do a full-page redirect or create an iframe,
+You have the choice to do a full-page redirect, create an iframe, or present this page in a manner of your choosing,
 but the SDK has no control or knowledge of the contents of this page or if it will look good in a small iframe.
-
-6. If the payment is not yet cleared, you can monitor the payment session status by using the payment session id to call `GET /c/{tenantId}/api/v1/ps/{id}`
+6. Application backend observes payment session state after user payment data collection via `GET /c/{tenantId}/api/v1/ps/{id}` and processes the payment via the `/process` endpoint of the payment session
+> Note: Credit card payments additionally require a call to the `/capture` endpoint of the payment session to move the payment to CLEARED.
+7. If the payment is not yet cleared, you can monitor the payment session status by using the payment session id to call `GET /c/{tenantId}/api/v1/ps/{id}`
 
 ### returnUrl
+<a name="returnUrl"></a>
 When your application created a PaymentSession, it should have provided a returnUrl. This page is what the Broker will redirect your user to once a payment is complete.
 
 Your application may want to display information about the results of a transaction to the user after a payment completes.
