@@ -25,7 +25,7 @@ var BrokerWebSdk = require('@touchnet/broker-web-sdk/umd/broker-web-sdk.min.js')
 - `BrokerWebSdk(redirectTo)` - constructor that takes the redirectTo link from a recently created PaymentSession.
 - `mount(element, styles)` - inserts a payment form in `element` for collecting additional payer data (if applicable); takes a `styles` object to make the payment form look more like it's part of your page; Returns boolean of whether something was mounted.
 - `submit(options)` - submits the payment form for processing. Returns a Promise with a result object. `options` is an object.
-  Currently accepts `timeout` property that should be set to the time in milliseconds your application is willing to wait for a response before considering the submission to have timed-out (default is 10000 ms).
+  Currently accepts `timeout` property that should be set to the time in milliseconds your application is willing to wait for a response before considering the submission to have timed-out (default is 300000 ms).
   If the SDK times-out, but the submission ultimately succeeds, the next submission will fail with a "payer data already collected" error. Your app would need to handle that situation appropriately.
 
 ### Quick Start
@@ -69,7 +69,7 @@ This property will contain either the URL that the user must visit in order to c
 the same URL you provided as the `returnUrl` when you create a PaymentSession if no extra payment steps are required.
 You have the choice to do a full-page redirect, create an iframe, or present this page in a manner of your choosing,
 but the SDK has no control or knowledge of the contents of this page or if it will look good in a small iframe.
-6. Application backend observes payment session state after user payment data collection via `GET /c/{tenantId}/api/v1/ps/{id}` and processes the payment via the `/process` endpoint of the payment session
+6. Application backend observes payment session state after user payment data collection via `GET /c/{tenantId}/api/v1/ps/{id}` and processes the payment via the `/process` endpoint of the payment session. If the application needs sanitized data from collection, it is available via the payer link on the payment session. In the case of card payments, this will give them card last 4, expiration, bill address, and card type.
 > Note: Credit card payments additionally require a call to the `/capture` endpoint of the payment session to move the payment to CLEARED.
 7. If the payment is not yet cleared, you can monitor the payment session status by using the payment session id to call `GET /c/{tenantId}/api/v1/ps/{id}`
 
