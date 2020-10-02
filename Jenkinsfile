@@ -1,2 +1,2 @@
-@Library('TouchNet Shared Library@DEVOPS-761') _
+@Library('TouchNet Shared Library') _
 npm()
