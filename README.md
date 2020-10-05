@@ -1,4 +1,6 @@
 # Payment Broker Web SDK
+[![npm](https://img.shields.io/npm/v/@touchnet/broker-web-sdk)](https://www.npmjs.com/package/@touchnet/broker-web-sdk)
+
 The Broker Web SDK is intended to be used by application front-ends that want to make payments through the TouchNet Payment Broker and have the Broker's payment method collection forms appear integrated in your user interface. It uses an iframe for security/PCI reasons.
 
 See the [Payment Broker User Guide](docs/PaymentBrokerGuide.md) for the Payment Broker for background on the Payment Broker system and the flow of integration.
