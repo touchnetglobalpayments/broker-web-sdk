@@ -7,7 +7,7 @@ See the [Payment Broker User Guide](docs/PaymentBrokerGuide.md) for the Payment 
 
 ## Usage
 The Payment Broker Web SDK can be pulled in via NPM or at runtime.
-expo
+
 #### NPM package
 ```sh
 # Bundle the Broker Web SDK along with your application
