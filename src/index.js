@@ -122,7 +122,8 @@ window.addEventListener("message", event => {
         // this allows us to preserve the default browser behavior of form submission upon Enter event, even in our iframe,
         // by manually calling the parent form's submit event.
         if (parentForm) {
-          var event = new Event("submit");
+          // var event = new Event("submit");
+          var event = new Event("submit", { cancelable: true });
           parentForm.dispatchEvent(event);
         }
         break;
