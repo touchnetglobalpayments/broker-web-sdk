@@ -152,6 +152,8 @@ function ensureIframeClosed(timeout) {
 
 function getWindowMessageEventHandler(resolve, data) {
   return (event) => {
+    // checking for this event here as it starting coming through after upgrading react-scripts in payer
+    // collection forms to 5.0.x, causing the iframe to close prematurely.
     if (event.data === "[iFrameResizerChild]Ready") {
       return;
     }
