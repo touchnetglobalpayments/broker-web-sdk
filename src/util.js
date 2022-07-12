@@ -152,6 +152,9 @@ function ensureIframeClosed(timeout) {
 
 function getWindowMessageEventHandler(resolve, data) {
   return (event) => {
+    if (event.data === "[iFrameResizerChild]Ready") {
+      return;
+    }
     const origin = data.origin || window.location.origin;
     if (origin !== event.origin) {
       return;
