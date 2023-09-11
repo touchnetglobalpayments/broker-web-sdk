@@ -9,6 +9,7 @@ participant "TouchNet or external Payment Gateway" as TPG
 
 ' Start the diagram
 note over PAYER
+  <b>Recurring payment enrollment</b>
   The Payer goes through a consumer-initiated (CIT) 
   flow to set up / collect account data needed for  
   later use in merchant-initiated, recurring payments
@@ -38,6 +39,7 @@ deactivate MBE
 deactivate PB
 
 note over MBE
+  <b>Recurring payment processing</b>
   A merchant-initiated transaction (MIT) is
   then used to collect an installment
   payment at a later time
