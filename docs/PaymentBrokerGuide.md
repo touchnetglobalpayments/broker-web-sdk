@@ -30,7 +30,7 @@ Payment Broker supports the following options for how you want to display the pa
 
 These are the high-level steps used to create a merchant-initiated transaction where the card or account holder is not present:
 
-![MIT sequence diagram](https://www.plantuml.com/plantuml/svg/9Sf1gi8m483XgxntW7P04SIbEnU5BhelpMHeGYUPaCmOlBsAkn_-xpzcPFDabV-2QcatWBhrSOyQp5cZYfALieue2LGCGoRTMTp6PNkbpsdWgXnKXqvkQFw0ULhkm_boFO4NR33_s3ezbXKvVlCPgO_54hy1)
+![MIT sequence diagram](https://www.plantuml.com/plantuml/svg/9Swzgi904CNn_Zx5zG6I0KKGgv12i0Yai9Vz6B9BDZDXTeRWsnkrEiNv5V-kgXErfVmTCeLY4KtAVr9TwnL0tDPEMPDvgoY1IP6q3Ro0ieL4g5DXxyhgNil-LF32CqgpeMzgd64S7drpEb-E43bK67-i_wBdW1AI8xrJrkmKuwtmrgwVbWufxli6)
 
 
 ## Example App
