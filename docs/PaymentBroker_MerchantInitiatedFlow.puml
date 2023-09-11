@@ -38,8 +38,9 @@ deactivate MBE
 deactivate PB
 
 note over MBE
-  A merchant-initiated is then used to collect
-  an installment payment at a later time
+  A merchant-initiated transaction (MIT) is
+  then used to collect an installment
+  payment at a later time
 end note
 
 MBE->PB: Start merchant-initiated payment\nPOST /merchant/payment
