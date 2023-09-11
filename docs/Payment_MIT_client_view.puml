@@ -1,0 +1,58 @@
+' *******************************************
+' The intended audience is TouchNet internal.
+' The intended audience is TouchNet internal.
+' *******************************************
+@startuml
+autonumber
+
+' Declare the players on the screen
+actor "Payer" as PAYER
+participant "Merchant\nBack end" as  MBE
+participant "Payment Broker\nService" as PBS
+participant "TPG" as TPG
+
+' Messaging queues
+queue "Payment\nEvent"  as MQPE #purple
+
+' Start the diagram
+note over PAYER
+  The Payer has already
+  committed to storing
+  a payment method during
+  the CIT flow.
+
+  The stored payment token
+  is to be saved by the
+  merchant prior to beginning
+  this process.
+
+  Use CIT flow to collect
+  account information from
+  the payer without taking
+  a payment
+
+  See "Payment_CIT_end_to_end"
+end note
+activate MBE
+MBE -> PBS: Submit payer form\nPOST /c/{tenantId}/api/v1/merchant/payment
+activate PBS
+
+
+alt Payment processing error
+  PBS --> MBE: Return processing error
+end
+
+' Post payment to TPG
+PBS -> TPG: Post payment to TPG
+activate TPG
+deactivate TPG
+
+' Broadcast payment status message
+PBS -> MQPE: Payment status update message
+activate MQPE
+deactivate MQPE
+
+PBS --> MBE: Return processing results
+deactivate MBE
+deactivate PBS
+@enduml
