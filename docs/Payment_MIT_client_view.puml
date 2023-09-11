@@ -1,58 +1,53 @@
-' *******************************************
-' The intended audience is TouchNet internal.
-' The intended audience is TouchNet internal.
-' *******************************************
 @startuml
 autonumber
 
 ' Declare the players on the screen
 actor "Payer" as PAYER
-participant "Merchant\nBack end" as  MBE
-participant "Payment Broker\nService" as PBS
-participant "TPG" as TPG
-
-' Messaging queues
-queue "Payment\nEvent"  as MQPE #purple
+participant "Merchant\n application" as  MBE
+participant "Payment Broker" as PB
+participant "TouchNet or external Payment Gateway" as TPG
 
 ' Start the diagram
 note over PAYER
-  The Payer has already
-  committed to storing
-  a payment method during
-  the CIT flow.
-
-  The stored payment token
-  is to be saved by the
-  merchant prior to beginning
-  this process.
-
-  Use CIT flow to collect
-  account information from
-  the payer without taking
-  a payment
-
-  See "Payment_CIT_end_to_end"
+  The Payer goes through a consumer-initiated (CIT) 
+  flow to set up / collect account data needed for  
+  later use in merchant-initiated, recurring payments
 end note
+
+MBE --> PAYER: Option for user to set up recurring payment
 activate MBE
-MBE -> PBS: Submit payer form\nPOST /c/{tenantId}/api/v1/merchant/payment
-activate PBS
+PAYER -> MBE: User selects payment link
+MBE -> PB: Start Consumer-initiated (CIT) payment to collect\naccount information with intent fields\nPOST /customer/payment
+activate PB
+PB -> MBE: Navigation URL
+MBE -> PAYER: Navigation URL
 
-
-alt Payment processing error
-  PBS --> MBE: Return processing error
-end
-
-' Post payment to TPG
-PBS -> TPG: Post payment to TPG
-activate TPG
-deactivate TPG
-
-' Broadcast payment status message
-PBS -> MQPE: Payment status update message
-activate MQPE
-deactivate MQPE
-
-PBS --> MBE: Return processing results
+PAYER -> PB: Payment account collection
+PB --> MBE: Status notification (READY_FOR_PROCESS)
+note over MBE
+  The merchant can either take an initial payment at
+  this time, or store the merchantToken representing collected
+  account data for this payer/intent at a later time.
+end note
+MBE->PB: Get merchantToken via\nPOST payment{id}/process\nOR POST /payment/{id}/createToken
+MBE->PAYER: Recurring payment enrollment confirmation
+PB --> TPG: Process payment (optional)
+PB-->MBE: Status notification (CLEARED)
+MBE --> PAYER: Payment Receipt (optional)
 deactivate MBE
-deactivate PBS
+deactivate PB
+
+note over MBE
+  A merchant-initiated is then used to collect
+  an installment payment at a later time
+end note
+
+MBE->PB: Start merchant-initiated payment\nPOST /merchant/payment
+activate MBE
+activate PB
+MBE->PB: Process payment\nPOST /payment/{id}/process
+PB->TPG: Process payment
+PB-->MBE:Status notification (CLEARED)
+MBE->PAYER: Send email receipt
+
 @enduml
