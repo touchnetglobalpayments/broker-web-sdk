@@ -17,7 +17,7 @@ end note
 
 MBE --> PAYER: Option for user to set up recurring payment
 activate MBE
-PAYER -> MBE: User selects payment link
+PAYER -> MBE: User selects link to enroll in payment plan
 MBE -> PB: Start Consumer-initiated (CIT) payment to collect\naccount information with intent fields\nPOST /customer/payment
 activate PB
 PB -> MBE: Navigation URL
