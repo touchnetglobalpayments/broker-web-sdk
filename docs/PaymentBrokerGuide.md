@@ -30,6 +30,8 @@ Payment Broker supports the following options for how you want to display the pa
 
 These are the high-level steps used to create a merchant-initiated transaction where the card or account holder is not present:
 
+![MIT sequence diagram](https://www.plantuml.com/plantuml/svg/9Sf1gi8m483XgxntW7P04SIbEnU5BhelpMHeGYUPaCmOlBsAkn_-xpzcPFDabV-2QcatWBhrSOyQp5cZYfALieue2LGCGoRTMTp6PNkbpsdWgXnKXqvkQFw0ULhkm_boFO4NR33_s3ezbXKvVlCPgO_54hy1)
+
 
 ## Example App
 See the Example App for testing creating a PaymentSession and use of the Broker Web SDK to collect payer data in a partner development environment. The Utility page can be used to test the Web SDK in isolation.
