@@ -24,7 +24,7 @@ PB -> MBE: Navigation URL
 MBE -> PAYER: Navigation URL
 
 PAYER -> PB: Payment account collection
-PB --> MBE: Status notification (READY_FOR_PROCESS)
+PB --> MBE: Payment status notifications
 note over MBE
   The merchant can either take an initial payment at
   this time, or store the merchantToken representing collected
@@ -33,7 +33,7 @@ end note
 MBE->PB: Get merchantToken via\nPOST payment{id}/process\nOR POST /payment/{id}/createToken
 MBE->PAYER: Recurring payment enrollment confirmation
 PB --> TPG: Process payment (optional)
-PB-->MBE: Status notification (CLEARED)
+PB-->MBE: Payment status notifications
 MBE --> PAYER: Payment Receipt (optional)
 deactivate MBE
 deactivate PB
@@ -50,7 +50,7 @@ activate MBE
 activate PB
 MBE->PB: Process payment\nPOST /payment/{id}/process
 PB->TPG: Process payment
-PB-->MBE:Status notification (CLEARED)
+PB-->MBE:Payment status notifications
 MBE->PAYER: Send email receipt
 
 @enduml
