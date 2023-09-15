@@ -24,13 +24,13 @@ PB -> MBE: Navigation URL
 MBE -> PAYER: Navigation URL
 
 PAYER -> PB: Payment account collection
-PB --> MBE: Payment status notifications
+PB --> MBE: Payment status notification (READY_FOR_PROCESS)
 note over MBE
   The merchant can either take an initial payment at
   this time, or store the merchantToken representing collected
   account data for this payer/intent at a later time.
 end note
-MBE->PB: Get merchantToken via\nPOST payment{id}/process\nOR POST /payment/{id}/createToken
+MBE->PB: Get merchantToken via\nPOST payment{id}/process\nOR GET /payment/{id}/token
 MBE->PAYER: Recurring payment enrollment confirmation
 PB --> TPG: Process payment (optional)
 PB-->MBE: Payment status notifications

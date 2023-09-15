@@ -30,8 +30,9 @@ Payment Broker supports the following options for how you want to display the pa
 
 These are the high-level steps used to create a merchant-initiated transaction where the card or account holder is not present:
 
-![MIT sequence diagram](https://www.plantuml.com/plantuml/svg/9Swzgi904CNn_Zx5zG6I0KKGgv12i0Yai9Vz6B9BDZDXTeRWsnkrEiNv5V-kgXErfVmTCeLY4KtAVr9TwnL0tDPEMPDvgoY1IP6q3Ro0ieL4g5DXxyhgNil-LF32CqgpeMzgd64S7drpEb-E43bK67-i_wBdW1AI8xrJrkmKuwtmrgwVbWufxli6)
+![MIT sequence diagram](./PaymentBroker_MerchantInitiatedFlow.png)
 
+Note that similar steps with a set up CIT session and secondary CIT session can be used to accommodate a user wallet with saved payment method tokens.
 
 ## Example App
 See the Example App for testing creating a PaymentSession and use of the Broker Web SDK to collect payer data in a partner development environment. The Utility page can be used to test the Web SDK in isolation.
