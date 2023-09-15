@@ -1,0 +1,56 @@
+@startuml
+autonumber
+
+' Declare the players on the screen
+actor "Payer" as PAYER
+participant "Merchant\n application" as  MBE
+participant "Payment Broker" as PB
+participant "TouchNet or external Payment Gateway" as TPG
+
+' Start the diagram
+note over PAYER
+  <b>Recurring payment enrollment</b>
+  The Payer goes through a consumer-initiated (CIT) 
+  flow to set up / collect account data needed for  
+  later use in merchant-initiated, recurring payments
+end note
+
+MBE --> PAYER: Option for user to set up recurring payment
+activate MBE
+PAYER -> MBE: User selects link to enroll in payment plan
+MBE -> PB: Start Consumer-initiated (CIT) payment to collect\naccount information with intent fields\nPOST /customer/payment
+activate PB
+PB -> MBE: Navigation URL
+MBE -> PAYER: Navigation URL
+
+PAYER -> PB: Payment account collection
+PB --> MBE: Payment status notification (READY_FOR_PROCESS)
+note over MBE
+  The merchant can either take an initial payment at
+  this time, or store the merchantToken representing collected
+  account data for this payer/intent at a later time.
+end note
+MBE->PB: Get merchantToken via\nPOST payment{id}/process\nOR GET /payment/{id}/token
+MBE->PAYER: Recurring payment enrollment confirmation
+PB --> TPG: Process payment (optional)
+PB-->MBE: Payment status notifications
+MBE --> PAYER: Payment Receipt (optional)
+deactivate MBE
+deactivate PB
+
+note over MBE
+  <b>Recurring payment processing</b>
+  A merchant-initiated transaction (MIT) is
+  then used to collect an installment
+  payment at a later time
+end note
+
+MBE->PB: Start merchant-initiated payment\nPOST /merchant/payment
+activate MBE
+activate PB
+MBE->PB: Process payment\nPOST /payment/{id}/process
+PB->TPG: Process payment
+PB-->MBE:Payment status notifications
+MBE->PAYER: Send email receipt
+
+@enduml

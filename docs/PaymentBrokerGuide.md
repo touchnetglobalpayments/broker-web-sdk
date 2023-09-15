@@ -26,6 +26,14 @@ Payment Broker supports the following options for how you want to display the pa
 * Broker Web SDK: This is a JavaScript utility that enables you to embed the "raw" payer form in your page without the TouchNet branding. It uses an iframe for security/PCI reasons. If you choose to use the Broker Web SDK, you will be responsible for redirecting the user to the 3rd party payment page (if it exists). Refer to the Broker Web SDK docs for more info. See the [Broker Web SDK Guide](../README.md) for more information.
 * Stand-alone: This is what you'll see if you just paste the `redirectTo` URL directly in a browser. It includes things like a header and footer with TouchNet branding. You can do a full-page redirect to this page or open it in a modal with an iframe, or you can display the page however you like. If you choose to do a full-page redirect to the `redirectTo` URL (the stand-alone option), you have transferred control to the Broker system and there will be nothing to do until either A) you observe an update from the Broker (through the GET `PaymentSession` endpoint) or B) the user returns to your app through the `returnUrl`.
 
+## Recurring payments
+
+These are the high-level steps used to create a merchant-initiated transaction where the card or account holder is not present:
+
+![MIT sequence diagram](./PaymentBroker_MerchantInitiatedFlow.png)
+
+Note that similar steps with a set up CIT session and secondary CIT session can be used to accommodate a user wallet with saved payment method tokens.
+
 ## Example App
 See the Example App for testing creating a PaymentSession and use of the Broker Web SDK to collect payer data in a partner development environment. The Utility page can be used to test the Web SDK in isolation.
 
